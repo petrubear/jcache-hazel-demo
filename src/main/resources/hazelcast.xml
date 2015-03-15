@@ -2,6 +2,7 @@
 <hazelcast>
 	<properties>
 		<property name="hazelcast.logging.type">log4j</property>
+		<property name="hazelcast.jcache.provider.type">server</property>
 	</properties>
 	<cache name="fisaCache">
 		<key-type class-name="java.lang.Object" />
@@ -10,6 +11,18 @@
 		<management-enabled>true</management-enabled>
 		<read-through>true</read-through>
 		<write-through>true</write-through>
+		<backup-count>1</backup-count>
+		<async-backup-count>1</async-backup-count>
+		<in-memory-format>BINARY</in-memory-format>
+		<eviction size="10000" max-size-policy="ENTRY_COUNT" eviction-policy="LFU" />
+
+		<entry-listeners>
+			<entry-listener old-value-required="false"
+				synchronous="false">
+				<entry-listener-factory
+					class-name="emg.demo.jcache.listener.FisaCacheEntryListener" />
+			</entry-listener>
+		</entry-listeners>
 	</cache>
 	<group>
 		<name>dev</name>
@@ -140,20 +153,6 @@
 		<merge-policy>com.hazelcast.map.merge.PutIfAbsentMapMergePolicy
 		</merge-policy>
 
-	</map>
-
-	<map name="fisaCache">
-		<in-memory-format>BINARY</in-memory-format>
-		<backup-count>1</backup-count>
-		<async-backup-count>0</async-backup-count>
-		<time-to-live-seconds>0</time-to-live-seconds>
-		<max-idle-seconds>0</max-idle-seconds>
-		<eviction-policy>NONE</eviction-policy>
-		<max-size policy="PER_NODE">0</max-size>
-		<eviction-percentage>25</eviction-percentage>
-		<min-eviction-check-millis>100</min-eviction-check-millis>
-		<merge-policy>com.hazelcast.map.merge.PutIfAbsentMapMergePolicy
-		</merge-policy>
 	</map>
 
 	<multimap name="default">

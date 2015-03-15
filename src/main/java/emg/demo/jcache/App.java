@@ -23,22 +23,55 @@ public class App {
 		// Print the value 'Hello World'
 		if (logger.isInfoEnabled())
 			logger.info(value);
-		// instance.shutdown();
-		/*
-		 * int index = 0; String key = null; String val = null; while (true) {
-		 * key = "Item" + index; val = "Value" + index; cache.put(key, val);
-		 * index++; System.out.println(index); if (index % 2 == 0) {
-		 * cache.get(key); if (index % 5 == 0) { cache.remove(key); } } try {
-		 * Thread.sleep(2000); } catch (Exception ex) { } }
-		 */
-		
-		//pruebas de valores null
+
+		cache.putObjectInCache("world", "hello world!!");
+		value = (String) cache.getCachedObject("world");
+		if (logger.isInfoEnabled())
+			logger.info(value);
+
+		// pruebas Obj
+		cache.putObjectInCache(1, 2);
+		cache.putObjectInCache(10.2, 2.10);
+
+		if (logger.isInfoEnabled()) {
+			logger.info(cache.getCachedObject(1));
+			logger.info(cache.getCachedObject(10.2));
+		}
+
+		// pruebas de valores null
 		cache.putObjectInCache("nullTest", null);
 		if (logger.isInfoEnabled())
 			logger.info("nullTest: " + cache.getCachedObject("nullTest"));
 		String notFound = (String) cache.getCachedObject("notFound");
 		if (logger.isInfoEnabled())
 			logger.info("notFound: " + notFound);
-		cache.shutDown();
+
+		int index = 0;
+		int sleepTime = 10;
+		String key = null;
+		String val = null;
+		boolean stopServer = false;
+		while (index < 2000) {
+			key = "Item" + index;
+			val = "Value" + index;
+			cache.putObjectInCache(key, val);
+			index++;
+			if (logger.isDebugEnabled())
+				logger.debug(index);
+			if (index % 2 == 0) {
+				cache.getCachedObject(key);
+				if (index % 5 == 0) {
+					cache.removeCachedObject(key);
+				}
+			}
+			try {
+				Thread.sleep(sleepTime);
+			} catch (Exception ex) {
+			}
+		}
+		if (logger.isInfoEnabled())
+			logger.info("done");
+		if (stopServer)
+			cache.shutDown();
 	}
 }
